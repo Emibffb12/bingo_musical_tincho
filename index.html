@@ -49,12 +49,9 @@
                 </div>
             </div>
             <div class="flex items-center gap-2 flex-wrap justify-center">
-                <button onclick="switchTab('player')" id="btn-tab-player" class="px-4 py-2 rounded-xl text-sm font-medium bg-pink-600 text-white shadow-lg transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-ticket"><span> Mi Cartón</span></i>
-                </button>
-                <button onclick="switchTab('settings')" id="btn-tab-settings" class="px-4 py-2 rounded-xl text-sm font-medium bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-gear"><span> Lista de Canciones</span></i>
-                </button>
+                <span class="text-xs bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-600">
+                    <i class="fa-solid fa-compact-disc text-pink-400 mr-1"></i> Lista configurada en código
+                </span>
             </div>
         </div>
     </header>
@@ -72,8 +69,8 @@
                     <p class="text-sm text-slate-400 mt-1">Toca las casillas cuando suenen las canciones en la playlist.</p>
                 </div>
                 <div class="flex items-center gap-3 flex-wrap">
-                    <button onclick="generateNewCard()" class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm font-medium transition-all shadow border border-slate-600 flex items-center gap-2">
-                        <i class="fa-solid fa-shuffle text-pink-400"></i> Nuevo Cartón
+                    <button onclick="generateNewCard()" class="px-4 py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-pink-600/20 flex items-center gap-2">
+                        <i class="fa-solid fa-shuffle"></i> Nuevo Cartón
                     </button>
                     <button onclick="resetPlayerMarks()" class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm font-medium transition-all shadow border border-slate-600">
                         Limpiar Casillas
@@ -103,81 +100,106 @@
             </div>
         </section>
 
-        <!-- SETTINGS / SONG LIST VIEW -->
-        <section id="view-settings" class="space-y-6 hidden">
-            <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 shadow-xl">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                    <div>
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-list-music text-pink-400"></i> Lista de Canciones Base
-                        </h2>
-                        <p class="text-sm text-slate-400 mt-1">Edita las canciones para que al generar el cartón salgan tus temas favoritos (mínimo 16).</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="loadDefaultPreset()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm font-medium transition-all shadow border border-slate-600 flex items-center gap-2">
-                            <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i> Cargar Preset
-                        </button>
-                        <button onclick="saveSongList()" class="px-5 py-2 bg-pink-600 hover:bg-pink-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-pink-600/30 transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 space-y-4">
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Canciones (Una por línea)</label>
-                        <textarea id="songs-textarea" rows="12" class="w-full bg-slate-900 border border-slate-700 rounded-2xl p-4 text-sm text-slate-200 focus:outline-none focus:border-pink-500 font-mono" placeholder="Ej:
-Queen - Bohemian Rhapsody
-Michael Jackson - Billie Jean
-..."></textarea>
-                        <p class="text-xs text-slate-500" id="song-count-indicator">Total de canciones cargadas: 0 (Mínimo 16 requeridas)</p>
-                    </div>
-
-                    <div class="bg-slate-900/60 border border-slate-700/80 rounded-2xl p-5 flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-bold text-white text-sm mb-3 flex items-center gap-2">
-                                <i class="fa-solid fa-share-nodes text-purple-400"></i> Comparte este archivo
-                            </h3>
-                            <p class="text-xs text-slate-400 leading-relaxed mb-4">Pásales este mismo archivo HTML a tus amigos por WhatsApp. Cada uno lo abre en su teléfono, hace clic en "Nuevo Cartón" y obtiene una combinación única de 16 casillas para jugar.</p>
-                        </div>
-                        <button onclick="exportGameData()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-medium rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow">
-                            <i class="fa-solid fa-download text-pink-400"></i> Descargar Archivo para Amigos
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <script>
         // Songs loaded from Spotify playlist: https://open.spotify.com/playlist/7zXioN6Siq9LtJoQ5RNZ7w
+        // Edita esta lista directamente aquí en el código fuente para cambiar las canciones.
         const SPOTIFY_SONGS = [
-            "Queen - Bohemian Rhapsody",
-            "Michael Jackson - Billie Jean",
-            "The Beatles - Hey Jude",
-            "A-ha - Take On Me",
-            "Eagles - Hotel California",
-            "Bon Jovi - Livin' on a Prayer",
-            "Guns N' Roses - Sweet Child O' Mine",
-            "Whitney Houston - I Wanna Dance With Somebody",
-            "AC/DC - Back in Black",
-            "Dua Lipa - Levitating",
-            "The Weeknd - Blinding Lights",
-            "Harry Styles - As It Was",
-            "Shakira - Hips Don't Lie",
-            "Luis Fonsi - Despacito",
-            "Daddy Yankee - Gasolina",
-            "Soda Stereo - De Música Ligera",
-            "Charly García - Yendo de la Cama al Living",
-            "Enanitos Verdes - Lamento Boliviano",
-            "Coldplay - Viva La Vida",
-            "Taylor Swift - Shake It Off",
-            "Bruno Mars - Uptown Funk",
-            "The Police - Every Breath You Take",
-            "Madonna - Like a Prayer",
-            "Metallica - Enter Sandman"
-        ];
+    "Luck Ra, BM - La Morocha",
+    "Daddy Yankee - Gasolina",
+    "Emanero, Karina, j mena, Angela Torres - SINVERGÜENZA",
+    "La Nueva Luna - Y Ahora Te Vas",
+    "Gilda - Se Me Ha Perdido un Corazón",
+    "Queen - I Want To Break Free",
+    "Opus - Live Is Life",
+    "Luis Miguel - Ahora Te Puedes Marchar",
+    "Virus - Luna de Miel en la Mano",
+    "Soda Stereo - Persiana Americana",
+    "Patricio Rey y sus Redonditos de Ricota - La Bestia Pop",
+    "Vilma Palma e Vampiros - La Pachanga",
+    "La Mosca - Para No Verte Más",
+    "Los Pericos - Párate y Mira",
+    "Charly García - No Me Dejan Salir",
+    "Turf - Pasos al Costado",
+    "Viejas Locas - Me Gustas Mucho",
+    "Los Fabulosos Cadillacs - Padre Nuestro",
+    "Miguel Mateos/Zas - Tirá para Arriba",
+    "Mambrú - A Veces",
+    "Sergio Denis - Te Quiero Tanto, No Me Preguntes Más",
+    "Cristian Castro - Lloviendo Estrellas",
+    "Miranda! - Tu Misterioso Alguien",
+    "Cristian Castro - Azul",
+    "Ricardo Montaner - Me Va a Extrañar",
+    "Camilo, El Alfa - BEBÉ",
+    "Romeo Santos - Propuesta Indecente",
+    "La Base - Vienes y Te Vas",
+    "Néstor en Bloque - Una Calle Nos Separa",
+    "Tambó Tambó - La Cumbita",
+    "Yerba Brava - Vamos a Bailar",
+    "Ángela Leiva - Amiga Traidora",
+    "Karina - Con la Misma Moneda",
+    "Dalila - Quitame Ese Hombre",
+    "Los Bam Band Orquesta - Mírame a la Cara",
+    "Los Palmeras - El Bombón",
+    "Mario Luis - Voy a Olvidarme de Mí",
+    "Roze Oficial, Max Carra, Valen, Ramky en los Controles - Tu Jardín con Enanitos",
+    "Cazzu - Con Otra",
+    "Los Ángeles Azules, Emilia - Perdonarte, ¿Para Qué?",
+    "Lali - Disciplina",
+    "María Becerra - AUTOMÁTICO",
+    "TINI - La Triple T",
+    "Marcela Morelo - La Fuerza del Engaño",
+    "Soledad - El Bahiano",
+    "Shakira - Pies Descalzos, Sueños Blancos",
+    "Chayanne - Provócame",
+    "David Bisbal - Ave María",
+    "Chayanne - Salomé",
+    "Thalía - A Quién le Importa",
+    "KAROL G - Si Antes Te Hubiera Conocido",
+    "Rodrigo - Lo Mejor del Amor",
+    "Ulises Bueno - Intento",
+    "La K'onga, Nahuel Pennisi - Universo Paralelo",
+    "j mena - La Cobra",
+    "El Símbolo - La Isla del Sol",
+    "Thalía - Piel Morena",
+    "Carlos Vives, Shakira - La Bicicleta",
+    "Bandana - Llega la Noche",
+    "Ke Personajes - Como la Flor",
+    "Soda Stereo - De Música Ligera",
+    "Ricardo Montaner - Cachita",
+    "Ricky Martin - Fuego de Noche, Nieve de Día",
+    "Calle 13 - Atrévete-Te-Te",
+    "Big Mountain - Baby, I Love Your Way",
+    "Spice Girls - Wannabe",
+    "Lenny Kravitz - American Woman",
+    "Elvis Crespo - Suavemente",
+    "Los Rodríguez, Coque Malla - Mucho Mejor",
+    "Man Ray - Caribe Sur",
+    "Volcán - Esa Malvada",
+    "Pancho y La Sonora Colorada - Cachete, Pechito y Ombligo",
+    "Ráfaga - Una Cerveza",
+    "Cacho Castaña - La Reina de la Bailanta",
+    "Los Piojos - Verano del 92",
+    "Los Fatales - Comadre Compadre",
+    "Los Auténticos Decadentes - Corazón",
+    "Jean Carlos - Quiéreme",
+    "Gladys \"La Bomba Tucumana\" - La Pollera Amarilla",
+    "Rubén Rada - Cha Cha, Muchacha",
+    "Fito Páez - A Rodar Mi Vida",
+    "Marco Antonio Solís - Más Que Tu Amigo",
+    "Chocolate - Mayonesa",
+    "Azul Azul - La Bomba",
+    "Cyndi Lauper - Girls Just Want to Have Fun",
+    "Madonna - Like a Prayer",
+    "Abel Pintos - Sin Principio Ni Final",
+    "Maluma - Hawái",
+    "Juanes - La Camisa Negra",
+    "Diego Torres - Penélope",
+    "Luis Fonsi, Daddy Yankee - Despacito",
+    "Las Ketchup - The Ketchup Song (Aserejé)",
+    "Q' Lokura, Luck Ra - Mil Preguntas"
+];
 
         // Application State for 4x4 Grid (16 cells)
         let appState = {
@@ -190,8 +212,6 @@ Michael Jackson - Billie Jean
         // Initialize App on load
         window.addEventListener('DOMContentLoaded', () => {
             loadStateFromStorage();
-            document.getElementById('songs-textarea').value = appState.songs.join('\n');
-            updateSongCountIndicator();
             
             if (appState.currentCard.length !== 16) {
                 generateNewCard();
@@ -200,28 +220,13 @@ Michael Jackson - Billie Jean
             }
         });
 
-        // Tab Switching Logic
-        function switchTab(tabName) {
-            ['player', 'settings'].forEach(t => {
-                document.getElementById(`view-${t}`).classList.add('hidden');
-                document.getElementById(`btn-tab-${t}`).classList.remove('bg-pink-600', 'text-white', 'shadow-lg');
-                document.getElementById(`btn-tab-${t}`).classList.add('bg-slate-700', 'text-slate-300');
-            });
-
-            document.getElementById(`view-${tabName}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`btn-tab-${tabName}`);
-            activeBtn.classList.remove('bg-slate-700', 'text-slate-300');
-            activeBtn.classList.add('bg-pink-600', 'text-white', 'shadow-lg');
-        }
-
         function loadStateFromStorage() {
             const saved = localStorage.getItem('musical_bingo_4x4_state');
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
-                    if (parsed.songs && parsed.songs.length > 0) {
-                        appState.songs = parsed.songs;
-                    }
+                    // Always use the master code songs array or fallback
+                    appState.songs = [...SPOTIFY_SONGS];
                     if (parsed.currentCard && parsed.currentCard.length === 16) {
                         appState.currentCard = parsed.currentCard;
                         appState.markedCells = parsed.markedCells || Array(16).fill(false);
@@ -239,8 +244,7 @@ Michael Jackson - Billie Jean
 
         function generateNewCard() {
             if (appState.songs.length < 16) {
-                alertUser("Necesitas al menos 16 canciones en tu lista para generar un cartón 4x4.");
-                switchTab('settings');
+                alertUser("Necesitas al menos 16 canciones en la lista del código.");
                 return;
             }
 
@@ -313,49 +317,6 @@ Michael Jackson - Billie Jean
 
         function closeWinOverlay() {
             document.getElementById('win-overlay').classList.add('hidden');
-        }
-
-        function loadDefaultPreset() {
-            document.getElementById('songs-textarea').value = SPOTIFY_SONGS.join('\n');
-            updateSongCountIndicator();
-        }
-
-        function saveSongList() {
-            const text = document.getElementById('songs-textarea').value;
-            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-
-            if (lines.length < 16) {
-                alertUser("Por favor ingresa al menos 16 canciones válidas (una por línea) para el formato 4x4.");
-                return;
-            }
-
-            appState.songs = lines;
-            generateNewCard();
-            saveStateToStorage();
-
-            alertUser("¡Lista de canciones guardada y cartón 4x4 actualizado con éxito!");
-            switchTab('player');
-        }
-
-        function updateSongCountIndicator() {
-            const text = document.getElementById('songs-textarea').value;
-            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-            const indicator = document.getElementById('song-count-indicator');
-            indicator.textContent = `Total de canciones cargadas: ${lines.length} ${lines.length < 16 ? '(Mínimo 16 requeridas)' : '✓ ¡Listo para jugar!'}`;
-            indicator.className = lines.length < 16 ? "text-xs text-amber-400" : "text-xs text-emerald-400";
-        }
-
-        document.getElementById('songs-textarea').addEventListener('input', updateSongCountIndicator);
-
-        function exportGameData() {
-            const htmlContent = document.documentElement.outerHTML;
-            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.href = URL.createObjectURL(blob);
-            downloadAnchor.download = "carton_bingo_musical_4x4.html";
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
         }
 
         function alertUser(msg) {
