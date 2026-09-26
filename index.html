@@ -1,335 +1,340 @@
-<!DOCTYPE html>
-<html lang="es" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bingo Musical 4x4</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for music and UI icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#fdf4f8',
-                            100: '#fbe8f2',
-                            500: '#ec4899',
-                            650: '#db2777',
-                            700: '#be185d',
-                            900: '#831843'
+    <!DOCTYPE html>
+    <html lang="es" class="h-full">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bingo Musical 4x4</title>
+        <!-- Tailwind CSS CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- FontAwesome for music and UI icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            brand: {
+                                50: '#fdf4f8',
+                                100: '#fbe8f2',
+                                500: '#ec4899',
+                                650: '#db2777',
+                                700: '#be185d',
+                                900: '#831843'
+                            }
                         }
                     }
                 }
             }
-        }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Poppins', sans-serif; }
-        .bingo-cell {
-            aspect-ratio: 1 / 1;
-            transition: all 0.2s ease-in-out;
-        }
-    </style>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-full flex flex-col">
+        </script>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+            body { font-family: 'Poppins', sans-serif; }
+            .bingo-cell {
+                aspect-ratio: 1 / 1;
+                transition: all 0.2s ease-in-out;
+                min-height: 85px; /* Ensure ample size on mobile */
+            }
+            @media (min-width: 640px) {
+                .bingo-cell {
+                    min-height: 110px;
+                }
+            }
+        </style>
+    </head>
+    <body class="bg-slate-900 text-slate-100 min-h-full flex flex-col">
 
-    <header class="bg-slate-800 border-b border-slate-700 shadow-lg py-4 px-6 sticky top-0 z-50">
-        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-gradient-to-tr from-pink-500 to-purple-600 p-2.5 rounded-2xl shadow-md text-white">
-                    <i class="fa-solid fa-music text-xl"></i>
+        <header class="bg-slate-800 border-b border-slate-700 shadow-lg py-4 px-4 sm:px-6 sticky top-0 z-50">
+            <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="bg-gradient-to-tr from-pink-500 to-purple-600 p-2.5 rounded-2xl shadow-md text-white">
+                        <i class="fa-solid fa-music text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Bingo Musical (4x4)</h1>
+                        <p class="text-xs text-slate-400">¡Tu cartón personalizado para jugar con amigos!</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Bingo Musical (4x4)</h1>
-                    <p class="text-xs text-slate-400">¡Tu cartón personalizado para jugar con amigos!</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-2 flex-wrap justify-center">
-                <span class="text-xs bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-600">
-                    <i class="fa-solid fa-compact-disc text-pink-400 mr-1"></i> Lista configurada en código
-                </span>
-            </div>
-        </div>
-    </header>
-
-    <main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6">
-
-        <!-- PLAYER VIEW -->
-        <section id="view-player" class="space-y-6">
-            <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
-                <div>
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        <span>Cartón de Bingo 4x4</span>
-                        <span id="player-card-id" class="text-xs px-2.5 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-full font-mono">#001</span>
-                    </h2>
-                    <p class="text-sm text-slate-400 mt-1">Toca las casillas cuando suenen las canciones en la playlist.</p>
-                </div>
-                <div class="flex items-center gap-3 flex-wrap">
-                    <button onclick="generateNewCard()" class="px-4 py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-pink-600/20 flex items-center gap-2">
-                        <i class="fa-solid fa-shuffle"></i> Nuevo Cartón
-                    </button>
-                    <button onclick="resetPlayerMarks()" class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm font-medium transition-all shadow border border-slate-600">
-                        Limpiar Casillas
-                    </button>
+                <div class="flex items-center gap-2 flex-wrap justify-center">
+                    <span class="text-xs bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-600">
+                        <i class="fa-solid fa-compact-disc text-pink-400 mr-1"></i> Lista configurada en código
+                    </span>
                 </div>
             </div>
+        </header>
 
-            <!-- Bingo Grid Container -->
-            <div class="bg-slate-800 border border-slate-700 rounded-3xl p-4 sm:p-8 shadow-2xl relative overflow-hidden">
-                <div id="bingo-grid" class="grid grid-cols-4 gap-2 sm:gap-4 max-w-xl mx-auto">
-                    <!-- Populated via JS -->
-                </div>
+        <main class="flex-grow max-w-4xl w-full mx-auto p-3 sm:p-6 flex flex-col justify-center">
 
-                <!-- Win Overlay Notification -->
-                <div id="win-overlay" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center p-6 z-40 transition-all">
-                    <div class="bg-gradient-to-b from-slate-900 to-slate-800 border border-pink-500/50 p-8 rounded-3xl shadow-2xl text-center max-w-md w-full animate-bounce">
-                        <div class="w-20 h-20 bg-pink-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg shadow-pink-500/50">
-                            <i class="fa-solid fa-trophy"></i>
-                        </div>
-                        <h3 class="text-3xl font-extrabold text-white mb-2">¡BINGO MUSICAL!</h3>
-                        <p class="text-slate-300 text-sm mb-6">¡Completaste una línea ganadora en tu cartón 4x4!</p>
-                        <button onclick="closeWinOverlay()" class="w-full py-3 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold rounded-xl shadow-lg shadow-pink-600/30 transition-all">
-                            Continuar Jugando
+            <!-- PLAYER VIEW -->
+            <section id="view-player" class="space-y-4 sm:space-y-6">
+                <div class="bg-slate-800 border border-slate-700 rounded-3xl p-4 sm:p-6 shadow-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                            <span>Cartón de Bingo 4x4</span>
+                            <span id="player-card-id" class="text-xs px-2.5 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-full font-mono">#001</span>
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-1">Toca las casillas cuando suenen las canciones en la playlist.</p>
+                    </div>
+                    <div class="flex items-center gap-2 sm:gap-3 flex-wrap w-full sm:w-auto justify-end">
+                        <button onclick="generateNewCard()" class="flex-1 sm:flex-none px-4 py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-pink-600/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-shuffle"></i> Nuevo Cartón
+                        </button>
+                        <button onclick="resetPlayerMarks()" class="flex-1 sm:flex-none px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm font-medium transition-all shadow border border-slate-600 flex items-center justify-center">
+                            Limpiar Casillas
                         </button>
                     </div>
                 </div>
-            </div>
-        </section>
 
-    </main>
+                <!-- Bingo Grid Container -->
+                <div class="bg-slate-800 border border-slate-700 rounded-3xl p-3 sm:p-8 shadow-2xl relative overflow-hidden">
+                    <div id="bingo-grid" class="grid grid-cols-4 gap-2.5 sm:gap-4 max-w-2xl mx-auto">
+                        <!-- Populated via JS -->
+                    </div>
 
-    <script>
-        // Songs loaded from Spotify playlist: https://open.spotify.com/playlist/7zXioN6Siq9LtJoQ5RNZ7w
-        // Edita esta lista directamente aquí en el código fuente para cambiar las canciones.
-        const SPOTIFY_SONGS = [
-    "Luck Ra, BM - La Morocha",
-    "Daddy Yankee - Gasolina",
-    "Emanero, Karina, j mena, Angela Torres - SINVERGÜENZA",
-    "La Nueva Luna - Y Ahora Te Vas",
-    "Gilda - Se Me Ha Perdido un Corazón",
-    "Queen - I Want To Break Free",
-    "Opus - Live Is Life",
-    "Luis Miguel - Ahora Te Puedes Marchar",
-    "Virus - Luna de Miel en la Mano",
-    "Soda Stereo - Persiana Americana",
-    "Patricio Rey y sus Redonditos de Ricota - La Bestia Pop",
-    "Vilma Palma e Vampiros - La Pachanga",
-    "La Mosca - Para No Verte Más",
-    "Los Pericos - Párate y Mira",
-    "Charly García - No Me Dejan Salir",
-    "Turf - Pasos al Costado",
-    "Viejas Locas - Me Gustas Mucho",
-    "Los Fabulosos Cadillacs - Padre Nuestro",
-    "Miguel Mateos/Zas - Tirá para Arriba",
-    "Mambrú - A Veces",
-    "Sergio Denis - Te Quiero Tanto, No Me Preguntes Más",
-    "Cristian Castro - Lloviendo Estrellas",
-    "Miranda! - Tu Misterioso Alguien",
-    "Cristian Castro - Azul",
-    "Ricardo Montaner - Me Va a Extrañar",
-    "Camilo, El Alfa - BEBÉ",
-    "Romeo Santos - Propuesta Indecente",
-    "La Base - Vienes y Te Vas",
-    "Néstor en Bloque - Una Calle Nos Separa",
-    "Tambó Tambó - La Cumbita",
-    "Yerba Brava - Vamos a Bailar",
-    "Ángela Leiva - Amiga Traidora",
-    "Karina - Con la Misma Moneda",
-    "Dalila - Quitame Ese Hombre",
-    "Los Bam Band Orquesta - Mírame a la Cara",
-    "Los Palmeras - El Bombón",
-    "Mario Luis - Voy a Olvidarme de Mí",
-    "Roze Oficial, Max Carra, Valen, Ramky en los Controles - Tu Jardín con Enanitos",
-    "Cazzu - Con Otra",
-    "Los Ángeles Azules, Emilia - Perdonarte, ¿Para Qué?",
-    "Lali - Disciplina",
-    "María Becerra - AUTOMÁTICO",
-    "TINI - La Triple T",
-    "Marcela Morelo - La Fuerza del Engaño",
-    "Soledad - El Bahiano",
-    "Shakira - Pies Descalzos, Sueños Blancos",
-    "Chayanne - Provócame",
-    "David Bisbal - Ave María",
-    "Chayanne - Salomé",
-    "Thalía - A Quién le Importa",
-    "KAROL G - Si Antes Te Hubiera Conocido",
-    "Rodrigo - Lo Mejor del Amor",
-    "Ulises Bueno - Intento",
-    "La K'onga, Nahuel Pennisi - Universo Paralelo",
-    "j mena - La Cobra",
-    "El Símbolo - La Isla del Sol",
-    "Thalía - Piel Morena",
-    "Carlos Vives, Shakira - La Bicicleta",
-    "Bandana - Llega la Noche",
-    "Ke Personajes - Como la Flor",
-    "Soda Stereo - De Música Ligera",
-    "Ricardo Montaner - Cachita",
-    "Ricky Martin - Fuego de Noche, Nieve de Día",
-    "Calle 13 - Atrévete-Te-Te",
-    "Big Mountain - Baby, I Love Your Way",
-    "Spice Girls - Wannabe",
-    "Lenny Kravitz - American Woman",
-    "Elvis Crespo - Suavemente",
-    "Los Rodríguez, Coque Malla - Mucho Mejor",
-    "Man Ray - Caribe Sur",
-    "Volcán - Esa Malvada",
-    "Pancho y La Sonora Colorada - Cachete, Pechito y Ombligo",
-    "Ráfaga - Una Cerveza",
-    "Cacho Castaña - La Reina de la Bailanta",
-    "Los Piojos - Verano del 92",
-    "Los Fatales - Comadre Compadre",
-    "Los Auténticos Decadentes - Corazón",
-    "Jean Carlos - Quiéreme",
-    "Gladys \"La Bomba Tucumana\" - La Pollera Amarilla",
-    "Rubén Rada - Cha Cha, Muchacha",
-    "Fito Páez - A Rodar Mi Vida",
-    "Marco Antonio Solís - Más Que Tu Amigo",
-    "Chocolate - Mayonesa",
-    "Azul Azul - La Bomba",
-    "Cyndi Lauper - Girls Just Want to Have Fun",
-    "Madonna - Like a Prayer",
-    "Abel Pintos - Sin Principio Ni Final",
-    "Maluma - Hawái",
-    "Juanes - La Camisa Negra",
-    "Diego Torres - Penélope",
-    "Luis Fonsi, Daddy Yankee - Despacito",
-    "Las Ketchup - The Ketchup Song (Aserejé)",
-    "Q' Lokura, Luck Ra - Mil Preguntas"
-];
+                    <!-- Win Overlay Notification -->
+                    <div id="win-overlay" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center p-6 z-40 transition-all">
+                        <div class="bg-gradient-to-b from-slate-900 to-slate-800 border border-pink-500/50 p-6 sm:p-8 rounded-3xl shadow-2xl text-center max-w-md w-full animate-bounce">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-pink-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl sm:text-3xl shadow-lg shadow-pink-500/50">
+                                <i class="fa-solid fa-trophy"></i>
+                            </div>
+                            <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">¡BINGO MUSICAL!</h3>
+                            <p class="text-slate-300 text-xs sm:text-sm mb-6">¡Completaste una línea ganadora en tu cartón 4x4!</p>
+                            <button onclick="closeWinOverlay()" class="w-full py-3 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold rounded-xl shadow-lg shadow-pink-600/30 transition-all text-sm">
+                                Continuar Jugando
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-        // Application State for 4x4 Grid (16 cells)
-        let appState = {
-            songs: [...SPOTIFY_SONGS],
-            currentCard: [], 
-            markedCells: Array(16).fill(false),
-            cardId: '001'
-        };
+        </main>
 
-        // Initialize App on load
-        window.addEventListener('DOMContentLoaded', () => {
-            loadStateFromStorage();
-            
-            if (appState.currentCard.length !== 16) {
-                generateNewCard();
-            } else {
-                renderPlayerCard();
-            }
-        });
+        <script>
+            // Songs loaded from Spotify playlist: https://open.spotify.com/playlist/7zXioN6Siq9LtJoQ5RNZ7w
+            // Edita esta lista directamente aquí en el código fuente para cambiar las canciones.
+            const SPOTIFY_SONGS = [
+        "Luck Ra, BM - La Morocha",
+        "Daddy Yankee - Gasolina",
+        "Emanero, Karina, j mena, Angela Torres - SINVERGÜENZA",
+        "La Nueva Luna - Y Ahora Te Vas",
+        "Gilda - Se Me Ha Perdido un Corazón",
+        "Queen - I Want To Break Free",
+        "Opus - Live Is Life",
+        "Luis Miguel - Ahora Te Puedes Marchar",
+        "Virus - Luna de Miel en la Mano",
+        "Soda Stereo - Persiana Americana",
+        "Patricio Rey y sus Redonditos de Ricota - La Bestia Pop",
+        "Vilma Palma e Vampiros - La Pachanga",
+        "La Mosca - Para No Verte Más",
+        "Los Pericos - Párate y Mira",
+        "Charly García - No Me Dejan Salir",
+        "Turf - Pasos al Costado",
+        "Viejas Locas - Me Gustas Mucho",
+        "Los Fabulosos Cadillacs - Padre Nuestro",
+        "Miguel Mateos/Zas - Tirá para Arriba",
+        "Mambrú - A Veces",
+        "Sergio Denis - Te Quiero Tanto, No Me Preguntes Más",
+        "Cristian Castro - Lloviendo Estrellas",
+        "Miranda! - Tu Misterioso Alguien",
+        "Cristian Castro - Azul",
+        "Ricardo Montaner - Me Va a Extrañar",
+        "Camilo, El Alfa - BEBÉ",
+        "Romeo Santos - Propuesta Indecente",
+        "La Base - Vienes y Te Vas",
+        "Néstor en Bloque - Una Calle Nos Separa",
+        "Tambó Tambó - La Cumbita",
+        "Yerba Brava - Vamos a Bailar",
+        "Ángela Leiva - Amiga Traidora",
+        "Karina - Con la Misma Moneda",
+        "Dalila - Quitame Ese Hombre",
+        "Los Bam Band Orquesta - Mírame a la Cara",
+        "Los Palmeras - El Bombón",
+        "Mario Luis - Voy a Olvidarme de Mí",
+        "Roze Oficial, Max Carra, Valen, Ramky en los Controles - Tu Jardín con Enanitos",
+        "Cazzu - Con Otra",
+        "Los Ángeles Azules, Emilia - Perdonarte, ¿Para Qué?",
+        "Lali - Disciplina",
+        "María Becerra - AUTOMÁTICO",
+        "TINI - La Triple T",
+        "Marcela Morelo - La Fuerza del Engaño",
+        "Soledad - El Bahiano",
+        "Shakira - Pies Descalzos, Sueños Blancos",
+        "Chayanne - Provócame",
+        "David Bisbal - Ave María",
+        "Chayanne - Salomé",
+        "Thalía - A Quién le Importa",
+        "KAROL G - Si Antes Te Hubiera Conocido",
+        "Rodrigo - Lo Mejor del Amor",
+        "Ulises Bueno - Intento",
+        "La K'onga, Nahuel Pennisi - Universo Paralelo",
+        "j mena - La Cobra",
+        "El Símbolo - La Isla del Sol",
+        "Thalía - Piel Morena",
+        "Carlos Vives, Shakira - La Bicicleta",
+        "Bandana - Llega la Noche",
+        "Ke Personajes - Como la Flor",
+        "Soda Stereo - De Música Ligera",
+        "Ricardo Montaner - Cachita",
+        "Ricky Martin - Fuego de Noche, Nieve de Día",
+        "Calle 13 - Atrévete-Te-Te",
+        "Big Mountain - Baby, I Love Your Way",
+        "Spice Girls - Wannabe",
+        "Lenny Kravitz - American Woman",
+        "Elvis Crespo - Suavemente",
+        "Los Rodríguez, Coque Malla - Mucho Mejor",
+        "Man Ray - Caribe Sur",
+        "Volcán - Esa Malvada",
+        "Pancho y La Sonora Colorada - Cachete, Pechito y Ombligo",
+        "Ráfaga - Una Cerveza",
+        "Cacho Castaña - La Reina de la Bailanta",
+        "Los Piojos - Verano del 92",
+        "Los Fatales - Comadre Compadre",
+        "Los Auténticos Decadentes - Corazón",
+        "Jean Carlos - Quiéreme",
+        "Gladys \"La Bomba Tucumana\" - La Pollera Amarilla",
+        "Rubén Rada - Cha Cha, Muchacha",
+        "Fito Páez - A Rodar Mi Vida",
+        "Marco Antonio Solís - Más Que Tu Amigo",
+        "Chocolate - Mayonesa",
+        "Azul Azul - La Bomba",
+        "Cyndi Lauper - Girls Just Want to Have Fun",
+        "Madonna - Like a Prayer",
+        "Abel Pintos - Sin Principio Ni Final",
+        "Maluma - Hawái",
+        "Juanes - La Camisa Negra",
+        "Diego Torres - Penélope",
+        "Luis Fonsi, Daddy Yankee - Despacito",
+        "Las Ketchup - The Ketchup Song (Aserejé)",
+        "Q' Lokura, Luck Ra - Mil Preguntas"
+    ];
 
-        function loadStateFromStorage() {
-            const saved = localStorage.getItem('musical_bingo_4x4_state');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    // Always use the master code songs array or fallback
-                    appState.songs = [...SPOTIFY_SONGS];
-                    if (parsed.currentCard && parsed.currentCard.length === 16) {
-                        appState.currentCard = parsed.currentCard;
-                        appState.markedCells = parsed.markedCells || Array(16).fill(false);
-                        appState.cardId = parsed.cardId || '001';
+            // Application State for 4x4 Grid (16 cells)
+            let appState = {
+                songs: [...SPOTIFY_SONGS],
+                currentCard: [], 
+                markedCells: Array(16).fill(false),
+                cardId: '001'
+            };
+
+            // Initialize App on load
+            window.addEventListener('DOMContentLoaded', () => {
+                loadStateFromStorage();
+                
+                if (appState.currentCard.length !== 16) {
+                    generateNewCard();
+                } else {
+                    renderPlayerCard();
+                }
+            });
+
+            function loadStateFromStorage() {
+                const saved = localStorage.getItem('musical_bingo_4x4_state');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        appState.songs = [...SPOTIFY_SONGS];
+                        if (parsed.currentCard && parsed.currentCard.length === 16) {
+                            appState.currentCard = parsed.currentCard;
+                            appState.markedCells = parsed.markedCells || Array(16).fill(false);
+                            appState.cardId = parsed.cardId || '001';
+                        }
+                    } catch(e) {
+                        console.error("Error loading saved state", e);
                     }
-                } catch(e) {
-                    console.error("Error loading saved state", e);
                 }
             }
-        }
 
-        function saveStateToStorage() {
-            localStorage.setItem('musical_bingo_4x4_state', JSON.stringify(appState));
-        }
-
-        function generateNewCard() {
-            if (appState.songs.length < 16) {
-                alertUser("Necesitas al menos 16 canciones en la lista del código.");
-                return;
+            function saveStateToStorage() {
+                localStorage.setItem('musical_bingo_4x4_state', JSON.stringify(appState));
             }
 
-            // Shuffle songs and pick 16
-            const shuffled = [...appState.songs].sort(() => 0.5 - Math.random());
-            appState.currentCard = shuffled.slice(0, 16);
-            appState.markedCells = Array(16).fill(false);
-            appState.cardId = Math.floor(100 + Math.random() * 900).toString();
-            
-            saveStateToStorage();
-            renderPlayerCard();
-        }
+            function generateNewCard() {
+                if (appState.songs.length < 16) {
+                    alertUser("Necesitas al menos 16 canciones en la lista del código.");
+                    return;
+                }
 
-        function resetPlayerMarks() {
-            appState.markedCells = Array(16).fill(false);
-            saveStateToStorage();
-            renderPlayerCard();
-        }
-
-        function renderPlayerCard() {
-            const grid = document.getElementById('bingo-grid');
-            document.getElementById('player-card-id').textContent = `#${appState.cardId}`;
-            grid.innerHTML = '';
-
-            appState.currentCard.forEach((song, index) => {
-                const isMarked = appState.markedCells[index];
-
-                const cell = document.createElement('div');
-                cell.className = `bingo-cell rounded-2xl p-3 flex flex-col items-center justify-center text-center cursor-pointer select-none border transition-all relative overflow-hidden ${
-                    isMarked 
-                        ? 'bg-gradient-to-tr from-pink-600 to-purple-600 text-white border-pink-400 shadow-lg shadow-pink-600/30 scale-[0.98]' 
-                        : 'bg-slate-900/80 text-slate-200 border-slate-700 hover:border-slate-500 hover:bg-slate-900'
-                }`;
-
-                cell.innerHTML = `
-                    <div class="text-[10px] opacity-60 absolute top-2 left-3 font-mono">#${index + 1}</div>
-                    <p class="text-xs sm:text-sm font-semibold line-clamp-4 px-1">${escapeHtml(song)}</p>
-                    ${isMarked ? '<div class="absolute bottom-2 right-3 text-xs bg-white/20 px-1.5 py-0.5 rounded font-bold"><i class="fa-solid fa-check"></i></div>' : ''}
-                `;
-
-                cell.onclick = () => toggleCellMark(index);
-                grid.appendChild(cell);
-            });
-        }
-
-        function toggleCellMark(index) {
-            appState.markedCells[index] = !appState.markedCells[index];
-            saveStateToStorage();
-            renderPlayerCard();
-            checkForWin();
-        }
-
-        function checkForWin() {
-            const m = appState.markedCells;
-            // Winning lines for a 4x4 grid
-            const winningLines = [
-                // Rows
-                [0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15],
-                // Columns
-                [0,4,8,12], [1,5,9,13], [2,6,10,14], [3,7,11,15],
-                // Diagonals
-                [0,5,10,15], [3,6,9,12]
-            ];
-
-            let hasWon = winningLines.some(line => line.every(idx => m[idx]));
-            if (hasWon) {
-                document.getElementById('win-overlay').classList.remove('hidden');
+                // Shuffle songs and pick 16
+                const shuffled = [...appState.songs].sort(() => 0.5 - Math.random());
+                appState.currentCard = shuffled.slice(0, 16);
+                appState.markedCells = Array(16).fill(false);
+                appState.cardId = Math.floor(100 + Math.random() * 900).toString();
+                
+                saveStateToStorage();
+                renderPlayerCard();
             }
-        }
 
-        function closeWinOverlay() {
-            document.getElementById('win-overlay').classList.add('hidden');
-        }
+            function resetPlayerMarks() {
+                appState.markedCells = Array(16).fill(false);
+                saveStateToStorage();
+                renderPlayerCard();
+            }
 
-        function alertUser(msg) {
-            const div = document.createElement('div');
-            div.className = "fixed bottom-6 right-6 bg-slate-800 border border-pink-500 text-white px-6 py-4 rounded-2xl shadow-2xl z-50 flex items-center gap-3 animate-fade-in";
-            div.innerHTML = `<i class="fa-solid fa-circle-exclamation text-pink-400 text-lg"></i> <span class="text-sm">${msg}</span>`;
-            document.body.appendChild(div);
-            setTimeout(() => div.remove(), 4000);
-        }
+            function renderPlayerCard() {
+                const grid = document.getElementById('bingo-grid');
+                document.getElementById('player-card-id').textContent = `#${appState.cardId}`;
+                grid.innerHTML = '';
 
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-    </script>
-</body>
-</html>
+                appState.currentCard.forEach((song, index) => {
+                    const isMarked = appState.markedCells[index];
+
+                    const cell = document.createElement('div');
+                    cell.className = `bingo-cell rounded-2xl p-2.5 sm:p-4 flex flex-col items-center justify-center text-center cursor-pointer select-none border transition-all relative overflow-hidden ${
+                        isMarked 
+                            ? 'bg-gradient-to-tr from-pink-600 to-purple-600 text-white border-pink-400 shadow-lg shadow-pink-600/30 scale-[0.98]' 
+                            : 'bg-slate-900/90 text-slate-200 border-slate-700 hover:border-slate-500 hover:bg-slate-900'
+                    }`;
+
+                    cell.innerHTML = `
+                        <div class="text-[9px] sm:text-[10px] opacity-60 absolute top-2 left-2.5 font-mono">#${index + 1}</div>
+                        <p class="text-xs sm:text-sm font-semibold line-clamp-4 px-1 leading-tight">${escapeHtml(song)}</p>
+                        ${isMarked ? '<div class="absolute bottom-2 right-2.5 text-xs bg-white/20 px-1.5 py-0.5 rounded font-bold"><i class="fa-solid fa-check"></i></div>' : ''}
+                    `;
+
+                    cell.onclick = () => toggleCellMark(index);
+                    grid.appendChild(cell);
+                });
+            }
+
+            function toggleCellMark(index) {
+                appState.markedCells[index] = !appState.markedCells[index];
+                saveStateToStorage();
+                renderPlayerCard();
+                checkForWin();
+            }
+
+            function checkForWin() {
+                const m = appState.markedCells;
+                // Winning lines for a 4x4 grid
+                const winningLines = [
+                    // Rows
+                    [0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15],
+                    // Columns
+                    [0,4,8,12], [1,5,9,13], [2,6,10,14], [3,7,11,15],
+                    // Diagonals
+                    [0,5,10,15], [3,6,9,12]
+                ];
+
+                let hasWon = winningLines.some(line => line.every(idx => m[idx]));
+                if (hasWon) {
+                    document.getElementById('win-overlay').classList.remove('hidden');
+                }
+            }
+
+            function closeWinOverlay() {
+                document.getElementById('win-overlay').classList.add('hidden');
+            }
+
+            function alertUser(msg) {
+                const div = document.createElement('div');
+                div.className = "fixed bottom-6 right-6 bg-slate-800 border border-pink-500 text-white px-6 py-4 rounded-2xl shadow-2xl z-50 flex items-center gap-3 animate-fade-in text-sm";
+                div.innerHTML = `<i class="fa-solid fa-circle-exclamation text-pink-400 text-lg"></i> <span>${msg}</span>`;
+                document.body.appendChild(div);
+                setTimeout(() => div.remove(), 4000);
+            }
+
+            function escapeHtml(str) {
+                return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+        </script>
+    </body>
+    </html>
